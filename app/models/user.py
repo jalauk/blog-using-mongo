@@ -7,6 +7,6 @@ class User(db.Document):
     name = db.StringField(min_length=2,max_length=64)
     email = db.EmailField(required=True)
     password = db.StringField(required=True)
-    is_author = db.BoolField(required=True,default=False)
+    is_author = db.BooleanField(required=True,default=False)
     created_at = db.DateTimeField(default=datetime.now())
     updated_at = db.DateTimeField(default=datetime.now())
