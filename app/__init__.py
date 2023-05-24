@@ -7,6 +7,7 @@ from app.exceptions.accessDeniedException import AccessDeinedException
 from app.exceptions.badRequestException import BadRequestException
 from app.exceptions.unauthorizedException import UnauthorizedException
 from app.exceptions.unprocessableEntityException import UnprocessableEntryException
+from app.utils.logger import Logger 
 
 app = Flask(__name__)
 CORS(app)
@@ -35,6 +36,11 @@ def unprocessableEntry(e):
 def unauthorized(e):
     return httpResponse(401,"Unauthorized")
 
+@app.errorhandler(BadRequestException)
+def unauthorized(e):
+    return httpResponse(400,"Bad Request")
+
 @app.errorhandler(Exception)
 def err_500(e):
+    Logger.errorLogs(e)
     return httpResponse(500,"Internal Server Error")
