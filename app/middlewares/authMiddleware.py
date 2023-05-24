@@ -1,4 +1,5 @@
 import jwt
+from functools import wraps
 from flask import request
 from app.config import Config
 from app.utils.helper import httpResponse
@@ -28,3 +29,27 @@ def auth(check_author):
         wrapper.__name__=f.__name__
         return wrapper
     return decorator
+
+def refreshTokenAuth(f):
+    @wraps(f)
+    def wrapper(*args,**kwargs):
+        token = None
+        if('Authorization' in request.headers):
+            token = request.headers['Authorization']
+            token = token.replace('Bearer ', '')
+            try:
+                payload = jwt.decode(token, Config.REFRESH_TOKEN_SECRET_KEY, algorithms=['HS256'])
+                if payload:
+                    request.user_id = payload['user_id']
+                    request.token = token
+                    request.is_author = payload['is_author']
+                    return f(*args, **kwargs)
+            except jwt.ExpiredSignatureError:
+                    return httpResponse(304)
+            except jwt.InvalidTokenError:
+                return httpResponse(305)
+            except Exception as e:
+                raise e
+        
+        return httpResponse(401,'Unauthorized')
+    return wrapper

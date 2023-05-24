@@ -2,7 +2,7 @@ from flask import Blueprint,request
 from app.services import userService
 from app.schemas.userSchema import register_schema,login_schema
 from app.middlewares.validatorMiddleware import validate
-from app.middlewares.authMiddleware import auth
+from app.middlewares.authMiddleware import auth,refreshTokenAuth
 
 bp = Blueprint("user",__name__,url_prefix="/api/user")
 
@@ -27,3 +27,8 @@ def login():
 @auth(True)
 def profile():
     return userService.profile(request.user_id)
+
+@bp.get("/reset-token")
+@refreshTokenAuth
+def resetToken():
+    return userService.resetToken(request.token,request.user_id,request.is_author)

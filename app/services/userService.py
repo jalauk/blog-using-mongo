@@ -1,6 +1,7 @@
 from app.models.user import User
 from werkzeug.security import generate_password_hash,check_password_hash
 from app.utils.helper import httpResponse,generateAccessToken,generateRefreshToken
+from app.models.refreshToken import RefreshToken
 
 def register(name,email,password,username,is_author):
     try:
@@ -35,7 +36,8 @@ def login(email,password):
         
         access_token = generateAccessToken(str(user.id),user.is_author)
         refresh_token = generateRefreshToken(str(user.id),user.is_author)
-
+        refresh_token = RefreshToken(user_id=user.id,refresh_token=refresh_token)
+        refresh_token.save()
         data = {
             "user" : {
                 "id" : str(user.id),
@@ -45,7 +47,7 @@ def login(email,password):
             },
             "tokens" : {
                 "access_token" : access_token,
-                "refresh_token" : refresh_token
+                "refresh_token" : refresh_token.refresh_token
             }
         }
 
@@ -68,5 +70,15 @@ def profile(user_id):
     }
     
     return httpResponse(200,data=data)
+
+def resetToken(token,user_id,is_author):
+    refresh_token = RefreshToken.objects(refresh_token=token)
+    if refresh_token:
+        access_token = generateAccessToken(user_id,is_author)
+        data = {
+            "access_token" : access_token
+        }
+        return httpResponse(203,data=data)
+    return httpResponse(306)
 
 
