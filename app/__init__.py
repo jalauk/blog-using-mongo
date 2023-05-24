@@ -37,7 +37,7 @@ def unprocessableEntry(e):
 
 @app.errorhandler(UnauthorizedException)
 def unauthorized(e):
-    return httpResponse(401,"Unauthorized")
+    return httpResponse(401,"Unauthorized",e.errors)
 
 @app.errorhandler(BadRequestException)
 def unauthorized(e):

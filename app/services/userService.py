@@ -53,5 +53,20 @@ def login(email,password):
     except Exception as e:
         raise e
     
+def profile(user_id):
+    user = User.objects(id=user_id).first()
+    if not user:
+        return httpResponse(302)
+    
+    data = {
+        "user" : {
+            "id" : str(user.id),
+            "name" : user.name,
+            "username" : user.username,
+            "email" : user.email
+        }
+    }
+    
+    return httpResponse(200,data=data)
 
 

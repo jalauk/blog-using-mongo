@@ -2,6 +2,7 @@ from flask import Blueprint,request
 from app.services import userService
 from app.schemas.userSchema import register_schema,login_schema
 from app.middlewares.validatorMiddleware import validate
+from app.middlewares.authMiddleware import auth
 
 bp = Blueprint("user",__name__,url_prefix="/api/user")
 
@@ -21,3 +22,8 @@ def login():
     email = request.json["email"]
     password = request.json["password"]
     return userService.login(email,password)
+
+@bp.get("/profile")
+@auth(True)
+def profile():
+    return userService.profile(request.user_id)
