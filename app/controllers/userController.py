@@ -1,6 +1,6 @@
 from flask import Blueprint,request
 from app.services import userService
-from app.schemas.userSchema import register_schema
+from app.schemas.userSchema import register_schema,login_schema
 from app.middlewares.validatorMiddleware import validate
 
 bp = Blueprint("user",__name__,url_prefix="/api/user")
@@ -14,3 +14,10 @@ def register():
     username=request.json["username"]
     is_author=request.json["is_author"]
     return userService.register(name,email,password,username,is_author)
+
+@bp.post("/login")
+@validate(login_schema)
+def login():
+    email = request.json["email"]
+    password = request.json["password"]
+    return userService.login(email,password)

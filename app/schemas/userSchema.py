@@ -1,6 +1,6 @@
 from marshmallow import fields,validate,Schema
 
-class registerSchema(Schema):
+class RegisterSchema(Schema):
     name = fields.Str(required=True,validate=validate.Length(min=2,max=64))
     email = fields.Email(required=True,validate=validate.Length(min=6,max=128))
     password = fields.Str(required=True,validate=validate.Length(min=8,max=32))
@@ -10,5 +10,14 @@ class registerSchema(Schema):
     class Meta:
         fields = ("name","email","password","username","is_author")
 
-register_schema = registerSchema()
+register_schema = RegisterSchema()
+
+class LoginSchema(Schema):
+    email = fields.Email(required=True,validate=validate.Length(min=6,max=128))
+    password = fields.Str(required=True,validate=validate.Length(min=8,max=32))
+
+    class Meta:
+        fields = ("email","password")
+
+login_schema = LoginSchema()
     

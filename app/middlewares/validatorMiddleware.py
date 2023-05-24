@@ -4,7 +4,6 @@ from app.exceptions.unprocessableEntityException import UnprocessableEntryExcept
 def validate(schema,location="body"):
     def decorator(f):
         def wrapper(*args,**kwargs):
-            print("working")
             inputs = {}
             if location == "body":
                 inputs = request.get_json()
